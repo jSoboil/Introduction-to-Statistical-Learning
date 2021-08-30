@@ -119,6 +119,94 @@
 # Furthermore, X as an element of R^p is a vector of p features. We wish to 
 # predict the survival time T. 
 
+# Since the observed quantity Y is positive and may have a long, right tail, we 
+# may be tempted to fit a linear regression of log(Y) on X. But censoring again
+# creates a problem since we are actually interested in predicting T, not Y! To
+# overcome this difficulty, we make use of sequential construction, similar to 
+# the constructions of the Kap-Meier and log-rank test.
+
+### The Hazard Function -----------------------------------------------------
+# The hazard function or hazard rate - also known as the force of mortality - 
+# is formally defined as 
+
+# h(t) = \lim{\delta t}{tends 0} \frac{P(t < T ≤ t + \delta_T | T > t)}{\delta_t}
+
+# where T is the (unobserved) survival time. It is the death rate in the instant
+# after time t, given survival past that time. Interesting to note is that
+# h(t) is actually the pdf for T conditional on T > t. It is important to 
+# realise that h(t) is closely related to the survival curve and that a key 
+# approach for modelling survival data as a function of covariates relies heavily
+# on the h(t), i.e. the Cox proportional hazards model. 
+
+# To model survival time as a function of covariates, it is convenient to work
+# directly with the survival function, instead of the pdf. One possible approach
+# is to assume a functional form for the hazard function h(t | x_i), such as
+
+# h(t | x_i) = exp(\beta{0} + \sum{j=1}{p} \beta_j x_{i}{j})
+
+# where the exponent function guarantees that h(t) is non-negative. However, the
+# function is constant with time. 
+
+### Proportional Hazards ----------------------------------------------------
+# The Porportional Hazards Assumption: the proportional hazards assumptions 
+# states that:
+
+# h(t | x_i) = h_0(t)exp(\sum{j=1}{p} x_{ij}\beta_{j})
+
+# where h_0(t)≥0 is an unspecified function, known as the *baseline hazard*. It
+# is the h(t) for an individual with features x_{i}{1} = ... = x_{i}{p} = 0. The
+# name "proportional hazards" arises from the fact that the hazard function for 
+# an individual with feature vector x_i is some unknown function h_0(t) times 
+# the factor exp(\sum{j=1}{p} x_{i}{j} \beta_{j}).
+
+# The quantity exp(\sum{j=1}{p} x_{i}{j} \beta_{j}) is called the *relative risk*
+# for the feature vector x_i = (x_{i}{1}, ... , x_{i}{p}) ^ T, relative to that
+# for the feature vector x_i = (0, ..., 0) ^ T.
+
+# What does this mean? Basically, it means that we make no assumptions about the
+# functional form of h_0(t). We allow the rate of death at time t, given that one
+# has survived to at least time t, to take any form. This makes the hazard 
+# function very flexible and can model a wide range of relationships between
+# the covariates and survival time. Our only assumption is that a one-unit 
+# increase in x_{i}{j} corresponds to an increase in h(t | x_i) by a facor of
+# exp(\beta_j)
+
+### Cox's Proportional Hazards Model ----------------------------------------
+# Because the form of h_0(t) in the proportional hazards assumption is unknown,
+# we cannot simply plug h(t | x_i) into the likelihood and then estimate
+# \beta = (\beta_1, ..., \beta_p) ^ T by maximum likelihood. However, the magic
+# of Cox's proportional hazards model lies in the fact that it is in fact 
+# possible to estimate the vector of coefficients without having to specify the
+# form h_0(t).
+
+# To do this, we make use of the same "sequential in time" logic that we used for
+# Kap-Meier and log-rank statistic. For simplicity, assume that there are no ties
+# among failure or death times, i.e., each failure occurs at a distinct time. 
+# Assume that \delta_1, i.e., the ith observation is uncensored, and thus y_i is
+# its failure time. Then the hazard function for the ith observation at time y_i
+# is h(y_i | x_i) = h_0(y_i)exp(\sum_{j=1}{p}x_{i}{j} \beta_j), and the total
+# hazard at time y_i for the at risk set is 
+
+# \sum_{i':y_i'≥y_i} h_0(t) exp(\sum_{j=1}{p}x_{i'}{j} \beta_j)
+
+# Therefore, the probability that the ith observation is one to fail at time y_i
+# is 
+
+# \frac{h_0(t) exp(\sum_{j=1}{p}x_{i}{j} \beta_j)}{
+# \sum_{i':y_i'≥y_i} h_0(t) exp(\sum_{j=1}{p}x_{i'}{j} \beta_j)}
+# with the baseline hazards cancelling out...
+
+# The *partial* likelihood is simply the product of these probabilities over all
+# uncensored observations. Thus, to estimate the vector of coefficients \beta
+# we simply maximise the partial likelihood with respect to \beta. Often no 
+# closed form solutions are available and so iterative simulations are required.
+
+#### Connection with the log-rank test ---------------------------------------
+
+
+
+
+
 
 
 
