@@ -201,24 +201,8 @@
 # we simply maximise the partial likelihood with respect to \beta. Often no 
 # closed form solutions are available and so iterative simulations are required.
 
-#### Connection with the log-rank test ---------------------------------------
+## Shrinkage for the Cox Model ---------------------------------------------
+# No! Lasso not okay in in casual clinical setting! See: "Principled selection 
+# of effect modifiers" by Remiro-Azocar et al.
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+# Lab exercises -----------------------------------------------------------
